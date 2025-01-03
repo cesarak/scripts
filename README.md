@@ -10,7 +10,7 @@ Auto-generate README files with project environment variables
 Run it using `curl`
 
 ```bash
-/bin/bash -c "$(curl https://raw.githubusercontent.com/cesarak/scripts/refs/heads/main/generate_readme.sh)"
+/bin/bash -c "$(curl -s https://raw.githubusercontent.com/cesarak/scripts/refs/heads/main/generate_readme.sh)"
 ```
 
 The script will ask you to customize your README file by adding (or not) some project information
