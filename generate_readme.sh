@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # Check if README.md exists
 if [ -f README.md ]; then
     # Prompt the user to decide whether to clear the existing README.md
