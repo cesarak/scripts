@@ -104,4 +104,4 @@ echo '```' >> README.md
 echo -e "\n\n*This README was automatically generated on $(date)*" >> README.md
 
 # Notify the user that the README.md has been generated
-echo "README.md has been generated successfully!"
+echo "README.md has been generated successfully! 🎉"
