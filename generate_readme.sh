@@ -1,7 +1,17 @@
 #!/bin/bash
 
-# Create or overwrite README.md
-cat > README.md << 'EOF'
+# Ask if the user wants to clear the current README.md or append to it
+if [ -f README.md ]; then
+    read -p "README.md already exists. Do you want to clear it? (y/n): " clear_readme
+    if [[ "$clear_readme" == "y" ]]; then
+        > README.md
+    fi
+else
+    touch README.md
+fi
+
+# Create or append to README.md
+cat >> README.md << 'EOF'
 # Project Environment Configuration
 
 ## System Environment
@@ -35,17 +45,21 @@ echo '```' >> README.md
 echo "React Native CLI: $(react-native --version 2>/dev/null || echo 'React Native CLI not installed')" >> README.md
 echo '```' >> README.md
 
-# Add Package Dependencies
-echo -e "\n## Package Dependencies" >> README.md
-echo '```json' >> README.md
-cat package.json | jq '.dependencies' >> README.md
-echo '```' >> README.md
+# Ask if the user wants to include package dependencies
+read -p "Do you want to include package dependencies? (y/n): " include_dependencies
+if [[ "$include_dependencies" == "y" ]]; then
+    # Add Package Dependencies
+    echo -e "\n## Package Dependencies" >> README.md
+    echo '```json' >> README.md
+    cat package.json | jq '.dependencies' >> README.md
+    echo '```' >> README.md
 
-# Add Development Dependencies
-echo -e "\n## Development Dependencies" >> README.md
-echo '```json' >> README.md
-cat package.json | jq '.devDependencies' >> README.md
-echo '```' >> README.md
+    # Add Development Dependencies
+    echo -e "\n## Development Dependencies" >> README.md
+    echo '```json' >> README.md
+    cat package.json | jq '.devDependencies' >> README.md
+    echo '```' >> README.md
+fi
 
 # Add Android SDK information
 echo -e "\n## Android Configuration" >> README.md
