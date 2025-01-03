@@ -84,7 +84,6 @@ echo '```' >> README.md
 echo "Git Version: $(git --version)" >> README.md
 echo "Current Branch: $(git branch --show-current)" >> README.md
 echo '```' >> README.md
-echo '`MobRadio® All Rights Reserved`' >> README.md
 
 # Add timestamp
 echo -e "\n\n*This README was automatically generated on $(date)*" >> README.md
