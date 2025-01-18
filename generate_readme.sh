@@ -77,6 +77,35 @@ elif [[ "$project_type" == "react" ]]; then
     fi
 fi
 
+# Check if GitHub Actions workflows exist and add information
+if [ -d ".github/workflows" ] && [ "$(ls -A .github/workflows/*.yml 2>/dev/null)" ]; then
+    echo -e "\n## GitHub Actions" >> README.md
+    for workflow in .github/workflows/*.yml; do
+        action_name=$(basename "$workflow" .yml)
+        description=$(grep -m 1 'description:' "$workflow" | sed 's/description: //')
+        echo -e "\n### $action_name" >> README.md
+        if [ -n "$description" ]; then
+            echo -e "$description" >> README.md
+        fi
+    done
+fi
+
+# Add Git submodules information
+if git config --file .gitmodules --get-regexp path &>/dev/null; then
+    echo -e "\n## Git Submodules" >> README.md
+    git config --file .gitmodules --get-regexp path | while read -r path_key path; do
+        url_key=$(echo "$path_key" | sed 's/\.path/.url/')
+        url=$(git config --file .gitmodules --get "$url_key")
+        echo "- $path: $url" >> README.md
+    done
+fi
+
+# Add Ruby local version
+if [ -f ".ruby-version" ]; then
+    echo -e "\n## Ruby Local Version" >> README.md
+    echo "Ruby Version: $(cat .ruby-version)" >> README.md
+fi
+
 # Add environment variables, excluding sensitive data
 echo -e "\n## Environment Variables" >> README.md
 echo '```bash' >> README.md
@@ -91,7 +120,8 @@ echo "Current Branch: $(git branch --show-current)" >> README.md
 echo '```' >> README.md
 
 # Add a timestamp to the README.md
-echo -e "\n\n*This README was automatically generated on $(date)*" >> README.md
+echo -e "\n\n*This README was automatically generated on $(date +'%Y-%m-%d %H:%M:%S')*" >> README.md
+echo -e "\nIf you want to add it on your project, refer to [this link](https://github.com/cesarak/scripts)" >> README.md
 
 # Notify the user that the README.md has been generated
 echo "README.md has been generated successfully! 🎉"
