@@ -1,12 +1,12 @@
 # 📰 Quick description
 
-Added here some scripts I use in React Native projects to automate tasks 🚀
+Added here are some scripts I use in my projects to automate tasks 🚀
 
 ## Scripts
 
 ### 1) generate_readme [(link)](generate_readme.sh)
 
-Auto-generate README files with project environment variables
+Auto-generate README files with project environment variables. You can choose between `Node JS` or `React Native` projects.
 Run it using `curl`
 
 ```bash
