@@ -62,9 +62,50 @@ elif [[ "$project_type" == "react" ]]; then
     # Add Android SDK configuration information
     echo -e "\n## Android Configuration" >> README.md
     echo '```gradle' >> README.md
-    echo "Compile SDK Version: $(grep 'compileSdkVersion' android/app/build.gradle | awk '{print $2}')" >> README.md
-    echo "Target SDK Version: $(grep 'targetSdkVersion' android/app/build.gradle | awk '{print $2}')" >> README.md
-    echo "Minimum SDK Version: $(grep 'minSdkVersion' android/app/build.gradle | awk '{print $2}')" >> README.md
+    # Extract compileSdkVersion from build.gradle
+    compile_sdk_version=$(grep -E 'compileSdkVersion[[:space:]]+[0-9]+' android/app/build.gradle | awk '{print $2}')
+    if [ -z "$compile_sdk_version" ]; then
+        # Extract the value from the ext block in android/build.gradle
+        compile_sdk_version=$(grep -E 'compileSdkVersion[[:space:]]*=[[:space:]]*[0-9]+' android/build.gradle | awk -F= '{print $2}' | tr -d ' ')
+    fi
+
+    target_sdk_version=$(grep -E 'targetSdkVersion[[:space:]]+[0-9]+' android/app/build.gradle | awk '{print $2}')
+    if [ -z "$target_sdk_version" ]; then
+        target_sdk_version=$(grep -E 'targetSdkVersion[[:space:]]*=[[:space:]]*[0-9]+' android/build.gradle | awk -F= '{print $2}' | tr -d ' ')
+    fi
+
+    minimun_sdk_version=$(grep -E 'minSdkVersion[[:space:]]+[0-9]+' android/app/build.gradle | awk '{print $2}')
+    if [ -z "$minimun_sdk_version" ]; then
+        minimun_sdk_version=$(grep -E 'minSdkVersion[[:space:]]*=[[:space:]]*[0-9]+' android/build.gradle | awk -F= '{print $2}' | tr -d ' ')
+    fi
+
+    build_tools_version=$(grep -E 'buildToolsVersion[[:space:]]+"[0-9.]+"' android/app/build.gradle | awk -F'"' '{print $2}')
+    if [ -z "$build_tools_version" ]; then
+        build_tools_version=$(grep -E 'buildToolsVersion[[:space:]]*=[[:space:]]*"[0-9.]+"' android/build.gradle | awk -F'"' '{print $2}')
+    fi
+
+    ndk_version=$(grep -E 'ndkVersion[[:space:]]+"[0-9.]+"' android/build.gradle | awk -F'"' '{print $2}')
+    if [ -z "$ndk_version" ]; then
+        ndk_version=$(grep -E 'ndkVersion[[:space:]]*=[[:space:]]*"[0-9.]+"' android/build.gradle | awk -F'"' '{print $2}')
+    fi
+
+    kotlin_version=$(grep -E 'kotlinVersion[[:space:]]+"[0-9.]+"' android/build.gradle | awk -F'"' '{print $2}')
+    if [ -z "$kotlin_version" ]; then
+        kotlin_version=$(grep -E 'kotlinVersion[[:space:]]*=[[:space:]]*"[0-9.]+"' android/build.gradle | awk -F'"' '{print $2}')
+    fi
+
+    echo "Compile SDK Version: $compile_sdk_version" >> README.md
+    echo "Target SDK Version: $target_sdk_version" >> README.md
+    echo "Minimum SDK Version: $minimun_sdk_version" >> README.md
+    echo "Build Tools Version: $build_tools_version" >> README.md
+    echo "NDK Version: $ndk_version" >> README.md
+    echo "Kotlin Version: $kotlin_version" >> README.md
+    echo '```' >> README.md
+    
+    # Add Gradle information
+    echo -e "\n### Gradle Configuration" >> README.md
+    echo '```' >> README.md
+    cd android && ./gradlew -v >> ../README.md && cd ..
     echo '```' >> README.md
 
     # Add iOS configuration information if on macOS
